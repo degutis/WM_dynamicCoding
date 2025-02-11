@@ -254,7 +254,7 @@ errorbar(my_xs(:,condition),my_means,my_ses,'k.');
 set(h_1, 'FaceColor',  colors(3,:), 'EdgeColor', 'none');
 set(gca,'TickDir','out','XTick',my_x,'XTickLabel',...
 my_rois);
-
+ylim([0 800])
 ylabel('Number of voxels','Fontsize',10);
 xlabel('ROIs');
 box off
@@ -269,7 +269,7 @@ errorbar(my_xs(:,condition),my_means,my_ses,'k.');
 set(h_1, 'FaceColor',  colors(3,:), 'EdgeColor', 'none');
 set(gca,'TickDir','out','XTick',my_x,'XTickLabel',...
 my_rois);
-
+ylim([0 0.4])
 ylabel('Proportion of total voxels','Fontsize',10);
 xlabel('ROIs');
 box off

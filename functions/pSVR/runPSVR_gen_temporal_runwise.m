@@ -11,7 +11,8 @@ function [genMatrix_fca, genMatrix_bfca] = runPSVR_gen_temporal_runwise(data_tra
    
     %% Prepare necessary variables
     numTRs = size(data_train,1);
-    TR_gen = 2; %three TRs being meaned
+    warning("TR changed to 0 instead of 2")
+    TR_gen = 0; %three TRs being meaned
     
     numTRs = numTRs-TR_gen;
     

@@ -1,4 +1,4 @@
-function [pval_WMspace,WMspace]=projectDistractor(numRois,my_rois_plus,resultsSave,currentWM_orDist_cell,currentWM_distractor_cell)
+function [pval_WMspace,WMspace,perc_explained,perc_explained_distractor]=projectDistractor(numRois,my_rois_plus,resultsSave,currentWM_orDist_cell,currentWM_distractor_cell)
 
 %% Projection distractor
 
@@ -10,6 +10,10 @@ orWM_space_or = zeros(numBins,2,numRois);
 orWM_space_distractor = zeros(numBins,2,numRois);
 distractor_space_distractor = zeros(numBins,2,numRois);
 distractor_space_or = zeros(numBins,2,numRois);
+
+perc_explained = zeros(numBins,numRois);
+perc_explained_distractor = zeros(numBins,numRois);
+
 
 for rr = 1:numRois   
     currentROI_WM_train = cat(2,currentWM_orDist_cell{:,rr,1,1});
@@ -24,8 +28,8 @@ for rr = 1:numRois
     currentROI_distractor_train = mean(currentROI_distractor_train,3);
     currentROI_distractor_train = currentROI_distractor_train - mean(currentROI_distractor_train,1);
 
-    [~,W]=pca(currentROI_WM_train','NumComponents',2);
-    [~,W_distractor]=pca(currentROI_distractor_train','NumComponents',2);
+    [~,W,~,~,perc_explained(:,rr)]=pca(currentROI_WM_train','NumComponents',2);
+    [~,W_distractor,~,~,perc_explained_distractor(:,rr)]=pca(currentROI_distractor_train','NumComponents',2);
     
     currentROI_distractor_test = mean(currentROI_distractor_test,3);
     currentROI_distractor_test = currentROI_distractor_test - mean(currentROI_distractor_test,1);           
@@ -83,6 +87,7 @@ colors = cbrewer('qual', 'Set1', 6);
 
 fig2 = figure(2);    
 for a= 1:numRois
+    fig2 = figure(2);    
     set(fig2, 'PaperUnits', 'inches');
     x_width=10 ;y_width=10;
     set(fig2, 'PaperPosition', [0 0 x_width y_width]); %
@@ -171,7 +176,9 @@ for a= 1:numRois
     title(my_rois_plus{a},' distractor')
 
     xlim([-10, 10])
+    xlabel(strjoin([string(round(perc_explained_distractor(1,a))),"%"],""))
     ylim([-10, 10])
+    ylabel(strjoin([string(round(perc_explained_distractor(2,a))),"%"],""))
 
     
     subplot(2,numRois,numRois+a)
@@ -257,7 +264,9 @@ for a= 1:numRois
     p44.LineWidth = 2;
 
     xlim([-10, 10])
+    xlabel(strjoin([string(round(perc_explained(1,a))),"%"],""))
     ylim([-10, 10])
+    ylabel(strjoin([string(round(perc_explained(2,a))),"%"],""))
     title(my_rois_plus{a},' WM space')
 end
 

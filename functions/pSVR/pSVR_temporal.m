@@ -110,24 +110,24 @@ for sub = subject:subject
         wm_orDist = rsp_wm(:,:,wmTrialIndex_orDist);
         wm_noiseDist = rsp_wm(:,:,wmTrialIndex_noise);
                 
-        [wmnoDist_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noDist,wmTrials(:),wmTrials(:));              
- 
-        [wmOr_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,wmTrials_orDist(:),wmTrials_orDist(:));
-        
-        [wmNoise_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noiseDist,wm_noiseDist,wmTrials_noise(:),wmTrials_noise(:));
-         
-
-        
-        [wmOronMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_orDist,wmTrials(:),wmTrials_orDist(:));
-         
-        [wmNoiseonMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noiseDist,wmTrials(:),wmTrials_noise(:));
-
-        [wmOronMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_orDist,wmTrials(:),wmTrials_orDist(:));        
-        [wmNoiseonMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noiseDist,wmTrials(:),wmTrials_noise(:));
-
-
-
-        [wmDist_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,wmTrials_orDist(:),distractor_WM(:));
+%         [wmnoDist_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noDist,wmTrials(:),wmTrials(:));              
+%  
+%         [wmOr_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,wmTrials_orDist(:),wmTrials_orDist(:));
+%         
+%         [wmNoise_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noiseDist,wm_noiseDist,wmTrials_noise(:),wmTrials_noise(:));
+%          
+% 
+%         
+%         [wmOronMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_orDist,wmTrials(:),wmTrials_orDist(:));
+%          
+%         [wmNoiseonMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noiseDist,wmTrials(:),wmTrials_noise(:));
+% 
+%         [wmOronMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_orDist,wmTrials(:),wmTrials_orDist(:));        
+%         [wmNoiseonMem_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_noDist,wm_noiseDist,wmTrials(:),wmTrials_noise(:));
+% 
+% 
+% 
+%         [wmDist_fcaMatrix(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,wmTrials_orDist(:),distractor_WM(:));
 
         [wmDist_fcaMatrix_distOnDist(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,distractor_WM(:),distractor_WM(:));
         [wmDist_fcaMatrix_genDisttoOr(sub,roi),~] = runPSVR_gen_temporal_runwise(wm_orDist,wm_orDist,distractor_WM(:),wmTrials_orDist(:));
@@ -135,7 +135,7 @@ for sub = subject:subject
     end
 end
 
-save(fullfile(results_new,['temporal_runwise_PSVM_',num2str(subject),'.mat']),'wmnoDist_fcaMatrix','wmOr_fcaMatrix','wmNoise_fcaMatrix', 'wmOronMem_fcaMatrix', 'wmNoiseonMem_fcaMatrix','wmDist_fcaMatrix')
-%save(fullfile(results_new,['temporal_Extra_NoDistOnDist_runwise_PSVM_',num2str(subject),'.mat']),'wmDist_fcaMatrix_distOnDist', 'wmDist_fcaMatrix_genDisttoOr')
+% save(fullfile(results_new,['temporal_runwise_PSVM_',num2str(subject),'.mat']),'wmnoDist_fcaMatrix','wmOr_fcaMatrix','wmNoise_fcaMatrix', 'wmOronMem_fcaMatrix', 'wmNoiseonMem_fcaMatrix','wmDist_fcaMatrix')
+save(fullfile(results_new,['temporal_Extra_NoDistOnDist_runwise_PSVM_',num2str(subject),'.mat']),'wmDist_fcaMatrix_distOnDist', 'wmDist_fcaMatrix_genDisttoOr')
 
 end

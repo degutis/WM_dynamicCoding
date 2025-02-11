@@ -151,7 +151,7 @@ if isfile(fullfile(resultsSave,'splitHalf_distractor.mat'))==0
         save(fullfile(resultsSave,'splitHalf_noise.mat'),'currentWM_noiseDist_cell','-v7.3')
     end
 else
-    binsVal = "22.5"; 
+    binsVal = [22.5;67.5;112.5;157.5]; 
     load(fullfile(resultsSave,'splitHalf_distractor.mat'))
     load(fullfile(resultsSave,'splitHalf_no.mat'))
     load(fullfile(resultsSave,'splitHalf_or.mat'))
@@ -293,9 +293,9 @@ if isfile(fullfile(resultsSave,'pvalStableDistractor.mat'))==0
         load(fullfile(resultsSave,'splitHalf_or.mat'))
     end
     
-    [pval_WMspace,OrDistValues]=projectDistractor(numRois_dist,my_rois_plus,resultsSave,currentWM_orDist_cell,currentWM_distractor_cell);
+    [pval_WMspace,OrDistValues,perc_explained,perc_explained_distractor]=projectDistractor(numRois_dist,my_rois_plus,resultsSave,currentWM_orDist_cell,currentWM_distractor_cell);
 
-    save(fullfile(resultsSave,'pvalStableDistractor.mat'),'pval_WMspace','OrDistValues')
+    save(fullfile(resultsSave,'pvalStableDistractor.mat'),'pval_WMspace','OrDistValues','perc_explained','perc_explained_distractor')
 end
 
 
@@ -304,6 +304,10 @@ end
 timePointCell_averageProject = {[1:3],[4:6],[7:9],[10:12],[13:14],[16:18]};
 timePointCell = {[4:6],[10:12],[16:18]};   
 timePointName = {'EarlyDelay','MiddleDelay','LateDelay'};
+
+perc_explained_no = zeros(numBins,length(timePointCell),length(my_rois_plus));
+perc_explained_or = zeros(numBins,length(timePointCell),length(my_rois_plus));
+perc_explained_noise = zeros(numBins,length(timePointCell),length(my_rois_plus));
 
 for tPoint=1:length(timePointCell)
 
@@ -318,9 +322,7 @@ for tPoint=1:length(timePointCell)
         currentROI_stable_train = mean(currentROI_train(:,:,timePointCell{tPoint}),3);
         currentROI_stable_train = currentROI_stable_train - mean(currentROI_stable_train,1);
 
-        [~,W]=pca(currentROI_stable_train','NumComponents',2);
-
-        %T = X*W
+        [~,W,~,~,perc_explained_no(:,tPoint,rr)]=pca(currentROI_stable_train','NumComponents',2);
 
         for t=1:length(timePointCell_averageProject)
             timePointProject = currentROI_test(:,:,timePointCell_averageProject{t});
@@ -337,7 +339,7 @@ for tPoint=1:length(timePointCell)
         currentROI_stable_or_train = mean(currentROI_or_train(:,:,timePointCell{tPoint}),3);
         currentROI_stable_or_train = currentROI_stable_or_train - mean(currentROI_stable_or_train,1);
 
-        [~,W_or]=pca(currentROI_stable_or_train','NumComponents',2);
+        [~,W_or,~,~,perc_explained_or(:,tPoint,rr)]=pca(currentROI_stable_or_train','NumComponents',2);
 
         for t=1:length(timePointCell_averageProject)
             timePointProject = currentROI_or_test(:,:,timePointCell_averageProject{t});
@@ -354,7 +356,7 @@ for tPoint=1:length(timePointCell)
         currentROI_stable_noise_train = mean(currentROI_noise_train(:,:,timePointCell{tPoint}),3);
         currentROI_stable_noise_train = currentROI_stable_noise_train - mean(currentROI_stable_noise_train,1);
 
-        [~,W_noise]=pca(currentROI_stable_noise_train','NumComponents',2);
+        [~,W_noise,~,~,perc_explained_noise(:,tPoint,rr)]=pca(currentROI_stable_noise_train','NumComponents',2);
 
         for t=1:length(timePointCell_averageProject)
             timePointProject = currentROI_noise_test(:,:,timePointCell_averageProject{t});
@@ -397,7 +399,6 @@ for tPoint=1:length(timePointCell)
     end
         
     %%  PCA time
-
 
     colors = cbrewer('qual', 'Set1', 6);
 
@@ -517,6 +518,9 @@ for tPoint=1:length(timePointCell)
         ylim([-10,10])
         xticks([-10 0 10])
         yticks([-10 0 10])
+        xlabel(strjoin([string(round(perc_explained_no(1,tPoint,rr))),"%"],""))
+        ylabel(strjoin([string(round(perc_explained_no(2,tPoint,rr))),"%"],""))
+
         
         
         subplot(4,3,3*(a-1)+2)
@@ -623,6 +627,9 @@ for tPoint=1:length(timePointCell)
         ylim([-10,10])  
         xticks([-10 0 10])
         yticks([-10 0 10])
+        xlabel(strjoin([string(round(perc_explained_or(1,tPoint,rr))),"%"],""))
+        ylabel(strjoin([string(round(perc_explained_or(2,tPoint,rr))),"%"],""))
+        
 
         subplot(4,3,3*(a-1)+3)
 
@@ -735,6 +742,9 @@ for tPoint=1:length(timePointCell)
         ylim([-10,10])        
         xticks([-10 0 10])
         yticks([-10 0 10])
+        xlabel(strjoin([string(round(perc_explained_noise(1,tPoint,rr))),"%"],""))
+        ylabel(strjoin([string(round(perc_explained_noise(2,tPoint,rr))),"%"],""))
+
 
         lh=legend(lgnd,'Location','southeast');
         lpos = lh.Position;
@@ -805,6 +815,18 @@ for tPoint=1:length(timePointCell)
             grid off
             xticks([-10 0 10])
             yticks([-10 0 10])
+            
+            if b==1
+                xlabel(strjoin([string(round(perc_explained_no(1,tPoint,rr))),"%"],""))
+                ylabel(strjoin([string(round(perc_explained_no(2,tPoint,rr))),"%"],""))
+            elseif b==2
+                xlabel(strjoin([string(round(perc_explained_or(1,tPoint,rr))),"%"],""))
+                ylabel(strjoin([string(round(perc_explained_or(2,tPoint,rr))),"%"],""))
+            elseif b==3
+                xlabel(strjoin([string(round(perc_explained_noise(1,tPoint,rr))),"%"],""))
+                ylabel(strjoin([string(round(perc_explained_noise(2,tPoint,rr))),"%"],""))
+            end
+            
             zticks([6 12 18])
             ax = gca;
             ax.FontSize = 6; 

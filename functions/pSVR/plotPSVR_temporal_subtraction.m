@@ -9,7 +9,6 @@ nameAdd = 'ReliableVox';
 
 resultsSave = fullfile(path2data,'pSVR_analysis',experiment,'temporal',nameAdd);
 dirReliable = dir(fullfile(resultsSave,'temporal_runwise_PSVM_*mat'));
-dirReliable2 = dir(fullfile(resultsSave,'temporal_Extra_distractor_runwise_*mat'));
 
 mkdir(resultsSave)
 
@@ -21,8 +20,10 @@ end
 
 if strcmp('E1',experiment)
     N=6;
+    dirReliable2 = dir(fullfile(resultsSave,'temporal_Extra_distractor_runwise_*mat'));
 elseif strcmp('E2',experiment)
     N=7;
+    dirReliable2 = dir(fullfile(resultsSave,'temporal_Extra_*mat'));
 end
 
 Roi=numel(my_rois_plus);
@@ -118,6 +119,7 @@ else
     save(fullfile(resultsSave,['temporalClusterPerm_',nameAdd,'.mat']),'Cluster_noDist','Cluster_Dist','Cluster_OronDist','Cluster_DistonOr','Cluster_orDist','Cluster_noiseDist','Cluster_orDistonMem','Cluster_noiseDistonMem');    
 end
 
+
 %% Dynamic coding
 
 Dynamic_noDist = zeros(timeDim,timeDim,Roi);
@@ -164,6 +166,12 @@ else
     save(fullfile(resultsSave,['temporalDynamicPerm_',nameAdd,'.mat']),'Dynamic_noDist','Dynamic_Dist','Dynamic_OronDist','Dynamic_DistonOr','Dynamic_orDist','Dynamic_noiseDist','Dynamic_orDistonMem','Dynamic_noiseDistonMem');    
 end
 
+
+
+
+
+
+
 %% Mean
 for r = 1:Roi
     wmNoDist_reliable_MEAN(r) = {mean(reshape(cell2mat(wmNoDist_reliable(:,r)'),[timeDim timeDim N]),3)};
@@ -186,9 +194,9 @@ dynamicism_noDist= zeros(length(selectTime),Roi);
 dynamicism_noiseDist= zeros(length(selectTime),Roi);
 
 for r=1:Roi
-    dynamicism_orDist(:,r) = dynamicism(Dynamic_orDist(:,:,r).*Cluster_orDist(:,:,r));
-    dynamicism_noDist(:,r) = dynamicism(Dynamic_noDist(:,:,r).*Cluster_noDist(:,:,r));    
-    dynamicism_noiseDist(:,r) = dynamicism(Dynamic_noiseDist(:,:,r).*Cluster_noiseDist(:,:,r));
+    dynamicism_orDist(:,r) = dynamicism(Dynamic_orDist(:,:,r).*dynamicsMultiply(Cluster_orDist(:,:,r)));
+    dynamicism_noDist(:,r) = dynamicism(Dynamic_noDist(:,:,r).*dynamicsMultiply(Cluster_noDist(:,:,r)));    
+    dynamicism_noiseDist(:,r) = dynamicism(Dynamic_noiseDist(:,:,r).*dynamicsMultiply(Cluster_noiseDist(:,:,r)));
 end
 
 %% Plotting
@@ -256,9 +264,9 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_orDist(:,:,rr))
-    runBoundary(Dynamic_orDist(:,:,rr).*Cluster_orDist(:,:,rr),'b')
+    runBoundary(Dynamic_orDist(:,:,rr).*dynamicsMultiply(Cluster_orDist(:,:,rr)),'b')
     
-    dotplot = Dynamic_orDist(:,:,rr).*Cluster_orDist(:,:,rr);
+    dotplot = Dynamic_orDist(:,:,rr).*dynamicsMultiply(Cluster_orDist(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -302,8 +310,9 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_orDistonMem(:,:,rr))
-    runBoundary(Dynamic_orDistonMem(:,:,rr).*Cluster_orDistonMem(:,:,rr),'b')
-    dotplot = Dynamic_orDistonMem(:,:,rr).*Cluster_orDistonMem(:,:,rr);
+    runBoundary(Dynamic_orDistonMem(:,:,rr).*dynamicsMultiply(Cluster_orDistonMem(:,:,rr)),'b')
+
+    dotplot = Dynamic_orDistonMem(:,:,rr).*dynamicsMultiply(Cluster_orDistonMem(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -348,8 +357,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_noiseDist(:,:,rr))
-    runBoundary(Dynamic_noiseDist(:,:,rr).*Cluster_noiseDist(:,:,rr),'b')
-    dotplot = Dynamic_noiseDist(:,:,rr).*Cluster_noiseDist(:,:,rr);
+    runBoundary(Dynamic_noiseDist(:,:,rr).*dynamicsMultiply(Cluster_noiseDist(:,:,rr)),'b')
+    dotplot = Dynamic_noiseDist(:,:,rr).*dynamicsMultiply(Cluster_noiseDist(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -393,8 +402,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_noiseDistonMem(:,:,rr))
-    runBoundary(Dynamic_noiseDistonMem(:,:,rr).*Cluster_noiseDistonMem(:,:,rr),'b')
-    dotplot = Dynamic_noiseDistonMem(:,:,rr).*Cluster_noiseDistonMem(:,:,rr);
+    runBoundary(Dynamic_noiseDistonMem(:,:,rr).*dynamicsMultiply(Cluster_noiseDistonMem(:,:,rr)),'b')
+    dotplot = Dynamic_noiseDistonMem(:,:,rr).*dynamicsMultiply(Cluster_noiseDistonMem(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -439,8 +448,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_noDist(:,:,rr))
-    runBoundary(Dynamic_noDist(:,:,rr).*Cluster_noDist(:,:,rr),'b')
-    dotplot = Dynamic_noDist(:,:,rr).*Cluster_noDist(:,:,rr);
+    runBoundary(Dynamic_noDist(:,:,rr).*dynamicsMultiply(Cluster_noDist(:,:,rr)),'b')
+    dotplot = Dynamic_noDist(:,:,rr).*dynamicsMultiply(Cluster_noDist(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -485,8 +494,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_Dist(:,:,rr))
-    runBoundary(Dynamic_Dist(:,:,rr).*Cluster_Dist(:,:,rr),'b')
-    dotplot = Dynamic_Dist(:,:,rr).*Cluster_Dist(:,:,rr);
+    runBoundary(Dynamic_Dist(:,:,rr).*dynamicsMultiply(Cluster_Dist(:,:,rr)),'b')
+    dotplot = Dynamic_Dist(:,:,rr).*dynamicsMultiply(Cluster_Dist(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -531,8 +540,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_DistonOr(:,:,rr))
-    runBoundary(Dynamic_DistonOr(:,:,rr).*Cluster_DistonOr(:,:,rr),'b')
-    dotplot = Dynamic_DistonOr(:,:,rr).*Cluster_DistonOr(:,:,rr);
+    runBoundary(Dynamic_DistonOr(:,:,rr).*dynamicsMultiply(Cluster_DistonOr(:,:,rr)),'b')
+    dotplot = Dynamic_DistonOr(:,:,rr).*dynamicsMultiply(Cluster_DistonOr(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
@@ -578,8 +587,8 @@ for rr = 1:Roi_plot
     axis square;
 
     runBoundary(Cluster_OronDist(:,:,rr))
-    runBoundary(Dynamic_OronDist(:,:,rr).*Cluster_OronDist(:,:,rr),'b')
-    dotplot = Dynamic_OronDist(:,:,rr).*Cluster_OronDist(:,:,rr);
+    runBoundary(Dynamic_OronDist(:,:,rr).*dynamicsMultiply(Cluster_OronDist(:,:,rr)),'b')
+    dotplot = Dynamic_OronDist(:,:,rr).*dynamicsMultiply(Cluster_OronDist(:,:,rr));
     
     for a=1:size(dotplot,1)
         for b =1:size(dotplot,2)
